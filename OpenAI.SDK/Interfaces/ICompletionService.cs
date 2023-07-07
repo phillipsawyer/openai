@@ -18,6 +18,9 @@ public interface ICompletionService
     /// <returns></returns>
     Task<CompletionCreateResponse> CreateCompletion(CompletionCreateRequest createCompletionModel, string? engineId = null);
 
+    IAsyncEnumerable<CompletionCreateResponse> StreamCompletionAsync(CompletionCreateRequest createCompletionRequest, string? engineId);
+
+    
     /// <summary>
     ///     Creates a new completion for the provided prompt and parameters
     /// </summary>

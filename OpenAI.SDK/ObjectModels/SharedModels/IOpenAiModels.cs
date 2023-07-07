@@ -19,7 +19,7 @@
 
         public interface ITemperature
         {
-            float? Temperature { get; set; }
+            double? Temperature { get; set; }
         }
 
         public interface ICreatedAt

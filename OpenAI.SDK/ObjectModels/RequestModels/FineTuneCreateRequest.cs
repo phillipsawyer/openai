@@ -53,7 +53,7 @@ public record FineTuneCreateRequest : IOpenAiModels.IModel
     ///     0.2 to see what produces the best results.
     /// </summary>
     [JsonPropertyName("learning_rate_multiplier")]
-    public float? LearningRateMultiplier { get; set; }
+    public double? LearningRateMultiplier { get; set; }
 
     /// <summary>
     ///     The weight to use for loss on the prompt tokens. This controls how much the model tries to learn to generate the

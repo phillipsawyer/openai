@@ -18,8 +18,39 @@ namespace OpenAI.GPT3.ObjectModels.RequestModels
         ///     the model will generate as if from the beginning of a new document.
         /// </summary>
         /// <see cref="https://beta.openai.com/docs/api-reference/completions/create#completions/create-prompt" />
+        /// <summary>
+        /// This is only used for serializing the request into JSON, do not use it directly.
+        /// </summary>
         [JsonPropertyName("prompt")]
-        public string? Prompt { get; set; }
+        public object CompiledPrompt
+        {
+            get
+            {
+                if (MultiplePrompts?.Length == 1)
+                    return Prompt;
+                
+                return MultiplePrompts;
+            }
+        }
+
+        /// <summary>
+        /// If you are requesting more than one prompt, specify them as an array of strings.
+        /// </summary>
+        [JsonIgnore]
+        public string[] MultiplePrompts { get; set; } = Array.Empty<string>();
+
+        /// <summary>
+        /// For convenience, if you are only requesting a single prompt, set it here
+        /// </summary>
+        [JsonIgnore]
+        public string Prompt
+        {
+            get => MultiplePrompts.FirstOrDefault();
+            set
+            {
+                MultiplePrompts = new[] { value };
+            }
+        }
 
         /// <summary>
         ///     The suffix that comes after a completion of inserted text.
@@ -37,13 +68,15 @@ namespace OpenAI.GPT3.ObjectModels.RequestModels
         public int? MaxTokens { get; set; }
 
         /// <summary>
-        ///     An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the
-        ///     tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are
-        ///     considered.
-        ///     We generally recommend altering this or temperature but not both.
+        /// top_p Optional Defaults to 1
+        /// An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the
+        /// tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+        /// We generally recommend altering this or temperature but not both.
+        ///
+        /// Top P provides better control for generating text with accuracy and correctness, Temperature works best for those applications in which original, creative or even amusing responses are sought.
         /// </summary>
         [JsonPropertyName("top_p")]
-        public float? TopP { get; set; }
+        public double? TopP { get; set; }
 
         /// <summary>
         ///     Defaults to 1
@@ -56,10 +89,7 @@ namespace OpenAI.GPT3.ObjectModels.RequestModels
 
         /// <summary>
         ///     Whether to stream back partial progress. If set, tokens will be sent as data-only
-        ///     <a
-        ///         href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format">
-        ///         server-sent events
-        ///     </a>
+        ///     <a href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format">server-sent events</a>
         ///     as they become available, with the stream terminated by a data: [DONE] message.
         /// </summary>
         [JsonPropertyName("stream")]
@@ -82,18 +112,18 @@ namespace OpenAI.GPT3.ObjectModels.RequestModels
         ///     Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far,
         ///     increasing the model's likelihood to talk about new topics.
         /// </summary>
-        /// <seealso cref="https://beta.openai.com/docs/api-reference/parameter-details" />
+        /// <a href="https://beta.openai.com/docs/api-reference/parameter-details">openai.com/docs/api-reference/parameter-details</a>
         [JsonPropertyName("presence_penalty")]
-        public float? PresencePenalty { get; set; }
+        public double? PresencePenalty { get; set; }
 
 
         /// <summary>
         ///     Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so
         ///     far, decreasing the model's likelihood to repeat the same line verbatim.
         /// </summary>
-        /// <seealso cref="https://beta.openai.com/docs/api-reference/parameter-details" />
+        /// <a href="https://beta.openai.com/docs/api-reference/parameter-details">openai.com/docs/api-reference/parameter-details</a>
         [JsonPropertyName("frequency_penalty")]
-        public float? FrequencyPenalty { get; set; }
+        public double? FrequencyPenalty { get; set; }
 
         /// <summary>
         ///     Generates best_of completions server-side and returns the "best" (the one with the lowest log probability per
@@ -116,9 +146,9 @@ namespace OpenAI.GPT3.ObjectModels.RequestModels
         ///     As an example, you can pass { "50256": -100}
         ///     to prevent the endoftext token from being generated.
         /// </summary>
-        /// <seealso cref="https://beta.openai.com/tokenizer?view=bpe" />
+        /// <a href="https://beta.openai.com/tokenizer?view=bpe">openai.com/tokenizer?view=bpe</a>
         [JsonPropertyName("logit_bias")]
-        public object? LogitBias { get; set; }
+        public Dictionary<string, double>? LogitBias { get; set; }
 
         /// <summary>
         ///     Include the log probabilities on the logprobs most likely tokens, as well the chosen tokens. For example, if
@@ -143,10 +173,11 @@ namespace OpenAI.GPT3.ObjectModels.RequestModels
         ///     to use. Higher values means the model will take more risks. Try 0.9 for more creative
         ///     applications, and 0 (argmax sampling) for ones with a well-defined answer.
         ///     We generally recommend altering this or top_p but not both.
+        ///     Top P provides better control for generating text with accuracy and correctness, Temperature works best for those applications in which original, creative or even amusing responses are sought.
         /// </summary>
-        /// <see cref="https://beta.openai.com/docs/api-reference/completions/create#completions/create-temperature" />
+        /// <a href="https://beta.openai.com/docs/api-reference/completions/create#completions/create-temperature" />
         [JsonPropertyName("temperature")]
-        public float? Temperature { get; set; }
+        public double? Temperature { get; set; }
 
         /// <summary>
         ///     A unique identifier representing your end-user, which will help OpenAI to monitor and detect abuse.

@@ -40,7 +40,7 @@ namespace OpenAI.GPT3.ObjectModels.RequestModels
         ///     We generally recommend altering this or temperature but not both.
         /// </summary>
         [JsonPropertyName("top_p")]
-        public float? TopP { get; set; }
+        public double? TopP { get; set; }
 
 
         [JsonPropertyName("model")] public string? Model { get; set; }
@@ -59,6 +59,6 @@ namespace OpenAI.GPT3.ObjectModels.RequestModels
         /// </summary>
         /// <see cref="https://beta.openai.com/docs/api-reference/completions/create#completions/create-temperature" />
         [JsonPropertyName("temperature")]
-        public float? Temperature { get; set; }
+        public double? Temperature { get; set; }
     }
 }
